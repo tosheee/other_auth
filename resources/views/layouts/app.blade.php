@@ -14,6 +14,7 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
+
     <div id="app">
         <nav class="navbar navbar-default navbar-static-top">
             <div class="container">
@@ -54,7 +55,7 @@
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
                                         <a href="{{ route('logout') }}"
-                                            onclick="event.preventDefault();
+                                           onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                             Logout
                                         </a>
@@ -70,6 +71,8 @@
                 </div>
             </div>
         </nav>
+
+
 
         @yield('content')
     </div>

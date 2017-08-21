@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class LoginController extends Controller
@@ -26,7 +27,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = 'admin/home';
 
     /**
      * Create a new controller instance.
@@ -35,19 +36,39 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest')->except('logout');
+        $this->middleware('guest:admin',['except' => 'logout']);
     }
 
-    /**
-     * Get the needed authorization credentials from the request.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return array
-     */
-    protected function credentials(Request $request)
+    public function showLoginForm()
     {
-        //return $request->only($this->username(), 'password');
-         return ['email' =>$this->username(), 'password'=>$request->password, 'status' => '1'];
+        return view('admin.login');
+    }
 
+    public function guard()
+    {
+        return Auth::guard('admin');
+    }
+
+    protected function sendLoginResponse(Request $request)
+    {
+        $request->session()->regenerate();
+
+        $this->clearLoginAttempts($request);
+
+        foreach ($this->guard()->user()->role as $role)
+        {
+            if ($role->name == 'admin')
+            {
+                return redirect('admin/home');
+            }
+            elseif ($role->name == 'editor')
+            {
+                return redirect('admin/editor');
+            }
+            else
+            {
+
+            }
+        }
     }
 }
